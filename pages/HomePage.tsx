@@ -1,7 +1,7 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
-import { ChevronRight, Cpu, Users, Award, Zap, Bot, Send, Terminal, Radio, Target, Sparkles } from 'lucide-react';
+import { Cpu, Users, Award, Zap, Bot, Sparkles, Radio, Target, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { chatWithAssistant } from '../services/geminiService';
 
@@ -21,15 +21,15 @@ export default function HomePage() {
   const [chatMsg, setChatMsg] = useState('');
   const [chatResponse, setChatResponse] = useState('');
   const [loading, setLoading] = useState(false);
-  const { scrollY } = useScroll();
   
-  // 3D Parallax Mouse Control
+  // 3D Parallax Mouse Control Engine
   const x = useMotionValue(0);
   const y = useMotionValue(0);
-  const mouseXSpring = useSpring(x);
-  const mouseYSpring = useSpring(y);
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+  const mouseXSpring = useSpring(x, { stiffness: 150, damping: 30 });
+  const mouseYSpring = useSpring(y, { stiffness: 150, damping: 30 });
+  
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-15deg", "15deg"]);
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -105,14 +105,13 @@ export default function HomePage() {
           {/* Enhanced 3D Mascot Section */}
           <motion.div 
             style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-            className="lg:col-span-6 relative flex justify-center"
+            className="lg:col-span-6 relative flex justify-center perspective-[2000px]"
           >
-            <div className="relative w-full max-w-[550px] aspect-square">
+            <div className="relative w-full max-w-[550px] aspect-square" style={{ transformStyle: "preserve-3d" }}>
               {/* Floating UI Elements (Parallax Layers) */}
               <motion.div 
-                animate={{ y: [-10, 10, -10] }}
+                animate={{ y: [-10, 10, -10], translateZ: 100 }}
                 transition={{ duration: 4, repeat: Infinity }}
-                style={{ translateZ: "100px" }}
                 className="absolute top-10 -left-10 z-20 glass p-4 rounded-sm border-l-2 border-cyan-500"
               >
                 <div className="text-[8px] font-black text-cyan-400 tracking-widest mb-1">UNIT_READY</div>
@@ -120,9 +119,8 @@ export default function HomePage() {
               </motion.div>
 
               <motion.div 
-                animate={{ y: [10, -10, 10] }}
+                animate={{ y: [10, -10, 10], translateZ: 150 }}
                 transition={{ duration: 5, repeat: Infinity }}
-                style={{ translateZ: "50px" }}
                 className="absolute bottom-20 -right-4 z-20 glass p-4 rounded-sm"
               >
                 <div className="flex gap-1">
@@ -131,7 +129,10 @@ export default function HomePage() {
               </motion.div>
               
               {/* Main 3D Mascot Container */}
-              <div className="relative z-10 w-full h-full rounded-[40px] overflow-hidden scanline glow-cyan border border-white/10 group">
+              <div 
+                className="relative z-10 w-full h-full rounded-[40px] overflow-hidden scanline glow-cyan border border-white/10 group bg-black shadow-[0_0_100px_rgba(6,182,212,0.1)]"
+                style={{ transform: "translateZ(50px)" }}
+              >
                 <img 
                   src="https://images.unsplash.com/photo-1546776310-eef45dd6d63c?auto=format&fit=crop&q=80&w=800" 
                   alt="DPIRC Cute Robot"
@@ -151,9 +152,15 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Orbital Rings */}
-              <div className="absolute inset-0 border border-cyan-500/5 rounded-full animate-[spin_60s_linear_infinite] scale-110" />
-              <div className="absolute inset-0 border border-dashed border-white/5 rounded-full animate-[spin_30s_linear_reverse_infinite] scale-125" />
+              {/* Orbital Rings with Depth */}
+              <div 
+                className="absolute inset-0 border border-cyan-500/5 rounded-full animate-[spin_60s_linear_infinite] scale-110" 
+                style={{ transform: "translateZ(-100px)" }}
+              />
+              <div 
+                className="absolute inset-0 border border-dashed border-white/5 rounded-full animate-[spin_30s_linear_reverse_infinite] scale-125" 
+                style={{ transform: "translateZ(-150px)" }}
+              />
             </div>
           </motion.div>
         </div>
