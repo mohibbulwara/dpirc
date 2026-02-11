@@ -5,6 +5,10 @@
     <meta charset="<?php bloginfo('charset'); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php wp_head(); ?>
+    <script>
+      // Polyfill for process.env in WordPress environment
+      window.process = { env: { NODE_ENV: 'production', API_KEY: '<?php echo esc_js(get_option('dpirc_gemini_api_key', '')); ?>' } };
+    </script>
     <style>
       :root {
         --neon-cyan: #00f3ff;
@@ -35,10 +39,10 @@
         "react-dom": "https://esm.sh/react-dom@19.0.0",
         "react-dom/client": "https://esm.sh/react-dom@19.0.0/client",
         "react/jsx-runtime": "https://esm.sh/react@19.0.0/jsx-runtime",
-        "@google/genai": "https://esm.sh/@google/genai@1.4.0",
-        "react-router-dom": "https://esm.sh/react-router-dom@7.0.0?external=react,react-dom",
-        "framer-motion": "https://esm.sh/framer-motion@11.11.17?external=react,react-dom",
-        "lucide-react": "https://esm.sh/lucide-react@0.454.0?external=react,react-dom"
+        "react-router-dom": "https://esm.sh/react-router-dom@7.0.0?deps=react@19.0.0,react-dom@19.0.0",
+        "framer-motion": "https://esm.sh/framer-motion@11.11.17?deps=react@19.0.0",
+        "lucide-react": "https://esm.sh/lucide-react@0.454.0?deps=react@19.0.0",
+        "@google/genai": "https://esm.sh/@google/genai@1.4.0"
       }
     }
     </script>

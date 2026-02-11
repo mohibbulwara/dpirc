@@ -1,71 +1,77 @@
 
-// Always use import {GoogleGenAI} from "@google/genai";
 import { GoogleGenAI } from "@google/genai";
 
-// Use 'gemini-3-flash-preview' for basic text tasks like chat and optimization
 const MODEL_NAME = 'gemini-3-flash-preview';
 
 /**
- * Basic chat functionality with the DPIRC CORE assistant.
- * Complies with guidelines: new instance per call, correct model, and response.text property access.
+ * Safely retrieves the API key from WordPress settings or global process polyfill.
  */
+const getApiKey = () => {
+  // Check WordPress localized settings first
+  const wpKey = (window as any).wpSettings?.apiKey;
+  if (wpKey && wpKey !== '') return wpKey;
+
+  // Fallback to global process polyfill (defined in index.php/html)
+  const processKey = (window as any).process?.env?.API_KEY;
+  if (processKey) return processKey;
+
+  return null;
+};
+
 export const chatWithAssistant = async (message: string) => {
+  const apiKey = getApiKey();
+  if (!apiKey) return "CORE_ERROR: API_KEY_MISSING. Please configure in System Settings.";
+
   try {
-    // Initialization must use a named parameter and exclusively process.env.API_KEY
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
       model: MODEL_NAME,
       contents: message,
       config: {
-        systemInstruction: "You are DPIRC CORE. Address users as Operators. Tone: Elite, technical, futuristic.",
+        systemInstruction: "You are DPIRC CORE. Address users as Operators. Tone: Elite, technical, futuristic. Keep responses concise.",
       }
     });
-    // Use .text property directly (it is a getter, not a method)
-    return response.text || "CORE_IDLE: No signal.";
+    return response.text || "CORE_IDLE: No signal detected.";
   } catch (error) {
-    console.error("Neural Error:", error);
-    return "ENCRYPTION ERROR: Signal lost.";
+    console.error("Neural Signal Error:", error);
+    return "ENCRYPTION ERROR: Secure link severed.";
   }
 };
 
-/**
- * Generates creative robotic or AI project ideas based on user input.
- * Complies with guidelines for new instance creation and proper SDK usage.
- */
 export const generateProjectIdea = async (prompt: string) => {
+  const apiKey = getApiKey();
+  if (!apiKey) return "CORE_ERROR: API_KEY_MISSING.";
+
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
       model: MODEL_NAME,
-      contents: `Generate a creative and advanced robotic/AI project idea based on the following input: ${prompt}`,
+      contents: `Generate a creative robotic/AI project idea: ${prompt}`,
       config: {
-        systemInstruction: "You are DPIRC CORE. You provide innovative, futuristic project concepts for a high-tech collective. Tone: Inspiring and technically precise.",
+        systemInstruction: "You are DPIRC CORE. Provide innovative project concepts. Tone: Technically precise.",
       }
     });
-    return response.text || "ERROR: Idea generation signal interrupted.";
+    return response.text || "ERROR: Neural synthesis failed.";
   } catch (error) {
-    console.error("Idea Generation Error:", error);
-    return "ENCRYPTION ERROR: Neural bottleneck detected.";
+    return "ENCRYPTION ERROR: Synthesis bottleneck.";
   }
 };
 
-/**
- * Analyzes and optimizes technical schematics or project descriptions.
- * Complies with guidelines for new instance creation and proper SDK usage.
- */
 export const optimizeSchematic = async (description: string) => {
+  const apiKey = getApiKey();
+  if (!apiKey) return "CORE_ERROR: API_KEY_MISSING.";
+
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.generateContent({
       model: MODEL_NAME,
-      contents: `Analyze and optimize this technical description/schematic for performance, efficiency, and modern standards: ${description}`,
+      contents: `Optimize this technical description: ${description}`,
       config: {
-        systemInstruction: "You are the DPIRC Systems Architect. Analyze technical text and suggest optimizations for hardware, software, or circuit efficiency. Use professional, technical language.",
+        systemInstruction: "You are the DPIRC Systems Architect. Analyze technical text and suggest optimizations.",
       }
     });
-    return response.text || "ERROR: Optimization analysis timed out.";
+    return response.text || "ERROR: Analysis sequence timeout.";
   } catch (error) {
-    console.error("Optimization Error:", error);
-    return "ENCRYPTION ERROR: Feedback loop in analysis circuit.";
+    return "ENCRYPTION ERROR: Feedback loop in logic gates.";
   }
 };

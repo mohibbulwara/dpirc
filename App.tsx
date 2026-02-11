@@ -18,15 +18,15 @@ import {
   Bot,
   Zap
 } from 'lucide-react';
-import { User, UserRole } from './types';
-import { mockUsers } from './services/mockData';
-import HomePage from './pages/HomePage';
-import ProjectsPage from './pages/ProjectsPage';
-import EventsPage from './pages/EventsPage';
-import BlogPage from './pages/BlogPage';
-import DashboardPage from './pages/DashboardPage';
-import AdminPage from './pages/AdminPage';
-import AboutPage from './pages/AboutPage';
+import { User, UserRole } from './types.ts';
+import { mockUsers } from './services/mockData.ts';
+import HomePage from './pages/HomePage.tsx';
+import ProjectsPage from './pages/ProjectsPage.tsx';
+import EventsPage from './pages/EventsPage.tsx';
+import BlogPage from './pages/BlogPage.tsx';
+import DashboardPage from './pages/DashboardPage.tsx';
+import AdminPage from './pages/AdminPage.tsx';
+import AboutPage from './pages/AboutPage.tsx';
 
 const Navbar = ({ currentUser, onLogout }: { currentUser: User | null; onLogout: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -161,7 +161,13 @@ export default function App() {
 
   useEffect(() => {
     const saved = localStorage.getItem('robox_user');
-    if (saved) setCurrentUser(JSON.parse(saved));
+    if (saved) {
+      try {
+        setCurrentUser(JSON.parse(saved));
+      } catch (e) {
+        localStorage.removeItem('robox_user');
+      }
+    }
   }, []);
 
   const handleLogout = () => {
@@ -195,6 +201,7 @@ export default function App() {
                 path="/admin" 
                 element={currentUser?.role === UserRole.ADMIN ? <AdminPage /> : <HomePage />} 
               />
+              <Route path="*" element={<HomePage />} />
             </Routes>
           </AnimatePresence>
         </main>
