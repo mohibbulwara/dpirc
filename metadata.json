@@ -1,0 +1,7 @@
+{
+  "name": "Copy of ROBOX Robotics Club - University Portal",
+  "description": "A futuristic, full-stack university robotics club management system featuring AI-powered project analysis, event registration, and a dark neon aesthetic.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
